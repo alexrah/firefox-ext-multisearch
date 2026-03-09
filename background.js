@@ -1,7 +1,7 @@
 // background.js - handles commands and setup
 
 const DEFAULT_ENGINES = [
-  { id: "quant", name: "Quant",  url: "https://www.qwant.com/?q={query}",                        enabled: true,  color: "#de5833" },
+  { id: "quant", name: "Quant",  url: "https://www.qwant.com/?q={query}",                        enabled: true,  color: "#646464" },
   { id: "duckduckgo", name: "DuckDuckGo",  url: "https://duckduckgo.com/?q={query}",             enabled: true,  color: "#de5833" },
   { id: "ecosia",     name: "Ecosia",      url: "https://www.ecosia.org/search?q={query}",       enabled: false, color: "#5a9e47" },
   { id: "brave",      name: "Brave",       url: "https://search.brave.com/search?q={query}",     enabled: false, color: "#fb542b" },

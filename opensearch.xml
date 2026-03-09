@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>MultiSearch</ShortName>
+  <Description>Search multiple engines simultaneously</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <Image width="16" height="16" type="image/svg+xml">moz-extension://__MSG_@@extension_id__/icons/icon16.svg</Image>
+  <Url type="text/html" method="GET" template="moz-extension://__MSG_@@extension_id__/search.html?q={searchTerms}"/>
+  <Url type="application/x-suggestions+json" method="GET" template="https://duckduckgo.com/ac/?q={searchTerms}&amp;type=list"/>
+</OpenSearchDescription>
