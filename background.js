@@ -40,3 +40,33 @@ browser.commands.onCommand.addListener(async (command) => {
     browser.tabs.sendMessage(tab.id, { type: "command", command }).catch(() => {});
   }
 });
+
+// Circumvent Block frame options
+browser.webRequest.onHeadersReceived.addListener(function (e) {
+  return {responseHeaders: e.responseHeaders.filter(e => {
+    const r = e.name.toLowerCase();
+    return "x-frame-options" !== r && "frame-options" !== r && "content-security-policy" !== r;
+  })};
+}, {urls: ["<all_urls>"], types: ["sub_frame"]}, ["blocking", "responseHeaders"]);
+
+
+// browser.webRequest.onHeadersReceived.addListener(
+//   (details) => {
+//     const headers = details.responseHeaders.filter(h => {
+//       return h.name.toLowerCase() !== "x-frame-options";
+//     }).map(h => {
+//       if (h.name.toLowerCase() === "content-security-policy") {
+//         // Strip only frame-ancestors directive, leave the rest intact
+//         h.value = h.value
+//           .split(";")
+//           .map(d => d.trim())
+//           .filter(d => !d.toLowerCase().startsWith("frame-ancestors"))
+//           .join("; ");
+//       }
+//       return h;
+//     });
+//     return { responseHeaders: headers };
+//   },
+//   { urls: ["<all_urls>"], types: ["sub_frame"] },
+//   ["blocking", "responseHeaders", "extraHeaders"]
+// );
