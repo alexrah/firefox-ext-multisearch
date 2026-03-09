@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MultiSearch</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f0f13; --surface: #18181f; --surface2: #1f1f28;
+      --border: #2a2a38; --accent: #c8ff47; --accent-dim: rgba(200,255,71,0.1);
+      --text: #eeeef5; --muted: #6b6b85; --radius: 8px; --font: 'Inter', system-ui, sans-serif;
+    }
+    @media (prefers-color-scheme: light) {
+      :root[data-theme="system"], :root[data-theme="light"] {
+        --bg: #f0f0f5; --surface: #ffffff; --surface2: #f8f8fb;
+        --border: #dddde8; --accent: #1a73e8; --accent-dim: rgba(26,115,232,0.1);
+        --text: #111118; --muted: #888898;
+      }
+    }
+    :root[data-theme="light"] { --bg:#f0f0f5;--surface:#fff;--surface2:#f8f8fb;--border:#dddde8;--accent:#1a73e8;--accent-dim:rgba(26,115,232,0.1);--text:#111118;--muted:#888898; }
+    :root[data-theme="dark"]  { --bg:#0f0f13;--surface:#18181f;--surface2:#1f1f28;--border:#2a2a38;--accent:#c8ff47;--accent-dim:rgba(200,255,71,0.1);--text:#eeeef5;--muted:#6b6b85; }
+
+    body { width: 300px; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; }
+
+    .header {
+      padding: 14px 16px 10px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+    .logo { font-size: 16px; font-weight: 800; letter-spacing: -0.3px; }
+    .logo span { color: var(--accent); }
+
+    .engines-preview {
+      display: flex; gap: 5px; padding: 6px 16px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .eng-chip {
+      font-size: 11px; padding: 2px 8px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; color: var(--muted);
+      display: flex; align-items: center; gap: 4px;
+    }
+    .eng-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+    .search-area { padding: 14px 16px; }
+    .search-row { display: flex; gap: 8px; }
+    input[type="text"] {
+      flex: 1; height: 34px; background: var(--surface2);
+      border: 1px solid var(--border); border-radius: 17px;
+      padding: 0 14px; font-size: 13px; color: var(--text);
+      outline: none; font-family: var(--font);
+      transition: border-color 0.15s;
+    }
+    input:focus { border-color: var(--accent); }
+    button {
+      height: 34px; padding: 0 14px; background: var(--accent);
+      color: #000; border: none; border-radius: 17px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      font-family: var(--font); white-space: nowrap;
+    }
+    button:hover { opacity: 0.85; }
+
+    .footer {
+      padding: 10px 16px;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-link {
+      font-size: 11px; color: var(--muted); cursor: pointer;
+      background: none; border: none; padding: 0;
+      font-family: var(--font);
+    }
+    .footer-link:hover { color: var(--text); background: none; border: none; height: auto; padding: 0; }
+    .active-count { font-size: 11px; color: var(--muted); }
+  </style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">Multi<span>Search</span></div>
+  <button style="height:26px;padding:0 10px;font-size:11px;background:var(--surface2);color:var(--muted);border:1px solid var(--border);border-radius:5px;" id="btn-settings">Settings</button>
+</div>
+
+<div class="engines-preview" id="engines-preview"></div>
+
+<div class="search-area">
+  <form id="popup-form">
+    <div class="search-row">
+      <input type="text" id="popup-input" placeholder="Search…" autofocus autocomplete="off">
+      <button type="submit">Go</button>
+    </div>
+  </form>
+</div>
+
+<div class="footer">
+  <span class="active-count" id="active-count">Loading…</span>
+  <button class="footer-link" id="btn-open-tab">Open in new tab</button>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>
