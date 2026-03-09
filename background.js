@@ -75,6 +75,7 @@ browser.tabs.onUpdated.addListener((tabId, change, tab) => {
     searchTabIds.delete(tabId);
   }
 });
+browser.tabs.onRemoved.addListener((tabId) => searchTabIds.delete(tabId));
 
 browser.webRequest.onBeforeRequest.addListener(
   (details) => {
