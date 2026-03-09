@@ -1,0 +1,57 @@
+{
+  "manifest_version": 2,
+  "name": "MultiSearch",
+  "version": "1.0.0",
+  "description": "Search multiple engines simultaneously in a split-screen view",
+  "icons": {
+    "16": "icons/icon16.svg",
+    "32": "icons/icon32.svg",
+    "48": "icons/icon48.svg",
+    "96": "icons/icon96.svg"
+  },
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": "icons/icon48.svg",
+    "default_title": "MultiSearch"
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab"
+  ],
+  "options_ui": {
+    "page": "options.html",
+    "browser_style": false,
+    "open_in_tab": true
+  },
+  "commands": {
+    "focus-panel-1": {
+      "suggested_key": { "default": "Alt+1" },
+      "description": "Focus panel 1"
+    },
+    "focus-panel-2": {
+      "suggested_key": { "default": "Alt+2" },
+      "description": "Focus panel 2"
+    },
+    "focus-panel-3": {
+      "suggested_key": { "default": "Alt+3" },
+      "description": "Focus panel 3"
+    },
+    "focus-panel-4": {
+      "suggested_key": { "default": "Alt+4" },
+      "description": "Focus panel 4"
+    },
+    "toggle-sync-scroll": {
+      "suggested_key": { "default": "Alt+S" },
+      "description": "Toggle synchronized scrolling"
+    }
+  },
+  "web_accessible_resources": [
+    "search.html",
+    "opensearch.xml"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  }
+}
