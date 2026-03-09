@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MultiSearch — Settings</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f0f13;
+      --surface: #18181f;
+      --surface2: #1f1f28;
+      --border: #2a2a38;
+      --accent: #c8ff47;
+      --accent-dim: rgba(200,255,71,0.1);
+      --text: #eeeef5;
+      --muted: #6b6b85;
+      --danger: #ff5566;
+      --success: #47ffb0;
+      --radius: 8px;
+      --font: 'Inter', system-ui, sans-serif;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root[data-theme="system"], :root[data-theme="light"] {
+        --bg: #f0f0f5;
+        --surface: #ffffff;
+        --surface2: #f8f8fb;
+        --border: #dddde8;
+        --accent: #1a73e8;
+        --accent-dim: rgba(26,115,232,0.1);
+        --text: #111118;
+        --muted: #888898;
+      }
+    }
+    :root[data-theme="light"] {
+      --bg: #f0f0f5; --surface: #ffffff; --surface2: #f8f8fb;
+      --border: #dddde8; --accent: #1a73e8; --accent-dim: rgba(26,115,232,0.1);
+      --text: #111118; --muted: #888898;
+    }
+    :root[data-theme="dark"] {
+      --bg: #0f0f13; --surface: #18181f; --surface2: #1f1f28;
+      --border: #2a2a38; --accent: #c8ff47; --accent-dim: rgba(200,255,71,0.1);
+      --text: #eeeef5; --muted: #6b6b85;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 14px;
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    .page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--accent); }
+
+    h2 {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Theme selector */
+    .theme-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .theme-opt {
+      flex: 1;
+      padding: 10px;
+      background: var(--surface2);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      transition: all 0.15s;
+    }
+    .theme-opt.active {
+      border-color: var(--accent);
+      color: var(--text);
+      background: var(--accent-dim);
+    }
+    .theme-opt .icon { font-size: 20px; display: block; margin-bottom: 4px; }
+
+    /* Engines list */
+    #engines-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .engine-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: border-color 0.15s;
+    }
+    .engine-row:hover { border-color: var(--accent); }
+    .engine-row.dragging { opacity: 0.5; }
+
+    .drag-handle {
+      cursor: grab;
+      color: var(--muted);
+      padding: 2px;
+      flex-shrink: 0;
+    }
+    .drag-handle:active { cursor: grabbing; }
+
+    .engine-color-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .engine-name-input {
+      width: 110px;
+      flex-shrink: 0;
+    }
+
+    .engine-url-input {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .engine-color-input {
+      width: 32px;
+      height: 28px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px;
+      background: var(--surface);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    input[type="text"], input[type="url"] {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 6px 10px;
+      font-size: 13px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s;
+      font-family: var(--font);
+    }
+    input[type="text"]:focus, input[type="url"]:focus {
+      border-color: var(--accent);
+    }
+
+    .toggle {
+      position: relative;
+      width: 34px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: var(--border);
+      border-radius: 9px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle input:checked ~ .toggle-track { background: var(--accent); }
+    .toggle-thumb {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 14px;
+      height: 14px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+      pointer-events: none;
+    }
+    .toggle input:checked ~ .toggle-track .toggle-thumb { transform: translateX(16px); }
+
+    .btn-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--danger);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+    .btn-icon:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.15s;
+      font-family: var(--font);
+    }
+    .btn-primary { background: var(--accent); color: #000; }
+    .btn-ghost {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn:hover { opacity: 0.85; }
+
+    .add-engine-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .add-engine-row input { flex: 1; }
+
+    /* Shortcuts */
+    .shortcuts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .shortcut-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .shortcut-label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Note box */
+    .note {
+      background: var(--accent-dim);
+      border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .note strong { color: var(--accent); }
+
+    /* Footer */
+    .footer-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+      align-items: center;
+    }
+
+    #save-status {
+      font-size: 12px;
+      color: var(--success);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    #save-status.show { opacity: 1; }
+
+    .enabled-count {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: normal;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="page-header">
+    <div class="logo">Multi<span>Search</span></div>
+    <span style="color:var(--muted);font-size:13px">— Settings</span>
+  </div>
+
+  <!-- Theme -->
+  <div class="section">
+    <div class="section-title">Appearance</div>
+    <div class="theme-group" id="theme-group">
+      <div class="theme-opt" data-theme="light">
+        <span class="icon">☀️</span>Light
+      </div>
+      <div class="theme-opt" data-theme="dark">
+        <span class="icon">🌙</span>Dark
+      </div>
+      <div class="theme-opt active" data-theme="system">
+        <span class="icon">🖥️</span>System
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Engines -->
+  <div class="section">
+    <div class="section-title">
+      Search Engines
+      <span class="enabled-count" id="enabled-count"></span>
+    </div>
+
+    <div class="note" style="margin-bottom:14px">
+      <strong>Tip:</strong> Enable up to 4 engines to show in split-screen. The URL must contain <strong>{query}</strong> as a placeholder, e.g. <code>https://google.com/search?q={query}</code>. Drag rows to reorder.
+    </div>
+
+    <div id="engines-list"></div>
+
+    <div class="add-engine-row">
+      <input type="text" id="add-name" placeholder="Engine name">
+      <input type="url" id="add-url" placeholder="https://example.com/search?q={query}">
+      <button class="btn btn-ghost" id="btn-add-engine">+ Add</button>
+    </div>
+  </div>
+
+  <!-- Keyboard Shortcuts -->
+  <div class="section">
+    <div class="section-title">Keyboard Shortcuts</div>
+    <div class="note" style="margin-bottom:14px">
+      <strong>Note:</strong> Firefox enforces keyboard shortcuts via <em>about:addons → Manage Extension Shortcuts</em>. The defaults are listed below; change them there.
+    </div>
+    <div class="shortcuts-grid" id="shortcuts-display"></div>
+  </div>
+
+  <!-- Firefox Search Engine Install -->
+  <div class="section">
+    <div class="section-title">Install as Firefox Search Engine</div>
+    <div class="note" style="margin-bottom:14px">
+      To use MultiSearch from the Firefox address bar or search bar, go to <strong>Firefox Preferences → Search</strong> add https://multisearch.local?q=%s and set it as your default.
+    </div>
+  </div>
+
+  <div class="footer-actions">
+    <button class="btn btn-primary" id="btn-save">Save Settings</button>
+    <button class="btn btn-ghost" id="btn-reset">Reset to Defaults</button>
+    <span id="save-status">✓ Saved</span>
+  </div>
+</div>
+
+<script src="options.js"></script>
+</body>
+</html>
