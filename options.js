@@ -46,26 +46,84 @@ function renderEngines() {
     row.className = "engine-row";
     row.draggable = true;
     row.dataset.index = i;
-    row.innerHTML = `
-      <div class="drag-handle" title="Drag to reorder">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-          <circle cx="4" cy="3" r="1.2"/><circle cx="8" cy="3" r="1.2"/>
-          <circle cx="4" cy="6" r="1.2"/><circle cx="8" cy="6" r="1.2"/>
-          <circle cx="4" cy="9" r="1.2"/><circle cx="8" cy="9" r="1.2"/>
-        </svg>
-      </div>
-      <div class="engine-color-swatch" style="background:${eng.color || '#888'}"></div>
-      <input class="engine-name-input" type="text" value="${escHtml(eng.name)}" placeholder="Name" data-field="name" data-i="${i}">
-      <input class="engine-url-input" type="url" value="${escHtml(eng.url)}" placeholder="https://…?q={query}" data-field="url" data-i="${i}">
-      <input type="color" class="engine-color-input" value="${eng.color || '#888888'}" data-field="color" data-i="${i}" title="Label color">
-      <label class="toggle" title="${eng.enabled ? 'Enabled' : 'Disabled'}">
-        <input type="checkbox" ${eng.enabled ? "checked" : ""} data-field="enabled" data-i="${i}">
-        <div class="toggle-track"><div class="toggle-thumb"></div></div>
-      </label>
-      <button class="btn-icon" data-action="delete" data-i="${i}" title="Remove">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/></svg>
-      </button>
-    `;
+
+    // Drag handle
+    const dragHandle = document.createElement("div");
+    dragHandle.className = "drag-handle";
+    dragHandle.title = "Drag to reorder";
+    dragHandle.innerHTML = `<svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+      <circle cx="4" cy="3" r="1.2"/><circle cx="8" cy="3" r="1.2"/>
+      <circle cx="4" cy="6" r="1.2"/><circle cx="8" cy="6" r="1.2"/>
+      <circle cx="4" cy="9" r="1.2"/><circle cx="8" cy="9" r="1.2"/>
+    </svg>`;
+    row.appendChild(dragHandle);
+
+    // Color swatch
+    const colorSwatch = document.createElement("div");
+    colorSwatch.className = "engine-color-swatch";
+    colorSwatch.style.background = eng.color || '#888';
+    row.appendChild(colorSwatch);
+
+    // Name input
+    const nameInput = document.createElement("input");
+    nameInput.className = "engine-name-input";
+    nameInput.type = "text";
+    nameInput.value = eng.name;
+    nameInput.placeholder = "Name";
+    nameInput.dataset.field = "name";
+    nameInput.dataset.i = i.toString();
+    row.appendChild(nameInput);
+
+    // URL input
+    const urlInput = document.createElement("input");
+    urlInput.className = "engine-url-input";
+    urlInput.type = "url";
+    urlInput.value = eng.url;
+    urlInput.placeholder = "https://…?q={query}";
+    urlInput.dataset.field = "url";
+    urlInput.dataset.i = i.toString();
+    row.appendChild(urlInput);
+
+    // Color input
+    const colorInput = document.createElement("input");
+    colorInput.type = "color";
+    colorInput.className = "engine-color-input";
+    colorInput.value = eng.color || '#888888';
+    colorInput.dataset.field = "color";
+    colorInput.dataset.i = i.toString();
+    colorInput.title = "Label color";
+    row.appendChild(colorInput);
+
+    // Toggle label
+    const toggleLabel = document.createElement("label");
+    toggleLabel.className = "toggle";
+    toggleLabel.title = eng.enabled ? "Enabled" : "Disabled";
+
+    const toggleCheckbox = document.createElement("input");
+    toggleCheckbox.type = "checkbox";
+    toggleCheckbox.checked = eng.enabled;
+    toggleCheckbox.dataset.field = "enabled";
+    toggleCheckbox.dataset.i = i.toString();
+
+    const toggleTrack = document.createElement("div");
+    toggleTrack.className = "toggle-track";
+    const toggleThumb = document.createElement("div");
+    toggleThumb.className = "toggle-thumb";
+    toggleTrack.appendChild(toggleThumb);
+
+    toggleLabel.appendChild(toggleCheckbox);
+    toggleLabel.appendChild(toggleTrack);
+    row.appendChild(toggleLabel);
+
+    // Delete button
+    const deleteButton = document.createElement("button");
+    deleteButton.className = "btn-icon";
+    deleteButton.dataset.action = "delete";
+    deleteButton.dataset.i = i.toString();
+    deleteButton.title = "Remove";
+    deleteButton.innerHTML = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/></svg>`;
+    row.appendChild(deleteButton);
+
     addDragHandlers(row, i);
     list.appendChild(row);
   });
@@ -138,11 +196,30 @@ function renderShortcuts() {
   Object.entries(SHORTCUT_LABELS).forEach(([key, label]) => {
     const row = document.createElement("div");
     row.className = "shortcut-row";
-    row.innerHTML = `
-      <div class="shortcut-label">${label}</div>
-      <code style="font-size:13px;color:var(--text);background:var(--surface2);padding:4px 8px;border-radius:4px;border:1px solid var(--border)">${shortcuts[key] || "Not set"}</code>
-      <div style="font-size:11px;color:var(--muted);margin-top:2px">Change in about:addons → Manage Extension Shortcuts</div>
-    `;
+    // Label
+    const labelDiv = document.createElement("div");
+    labelDiv.className = "shortcut-label";
+    labelDiv.textContent = label;
+    row.appendChild(labelDiv);
+
+    // Shortcut code
+    const codeEl = document.createElement("code");
+    codeEl.style.fontSize = "13px";
+    codeEl.style.color = "var(--text)";
+    codeEl.style.background = "var(--surface2)";
+    codeEl.style.padding = "4px 8px";
+    codeEl.style.borderRadius = "4px";
+    codeEl.style.border = "1px solid var(--border)";
+    codeEl.textContent = shortcuts[key] || "Not set";
+    row.appendChild(codeEl);
+
+    // Instruction
+    const instructionDiv = document.createElement("div");
+    instructionDiv.style.fontSize = "11px";
+    instructionDiv.style.color = "var(--muted)";
+    instructionDiv.style.marginTop = "2px";
+    instructionDiv.textContent = "Change in about:addons → Manage Extension Shortcuts";
+    row.appendChild(instructionDiv);
     grid.appendChild(row);
   });
 }

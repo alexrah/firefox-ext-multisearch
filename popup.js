@@ -8,7 +8,15 @@ async function init() {
   engines.forEach(eng => {
     const chip = document.createElement("div");
     chip.className = "eng-chip";
-    chip.innerHTML = `<div class="eng-dot" style="background:${eng.color}"></div>${eng.name}`;
+
+    const dot = document.createElement("div");
+    dot.className = "eng-dot";
+    dot.style.background = eng.color;
+    chip.appendChild(dot);
+
+    const nameText = document.createTextNode(eng.name);
+    chip.appendChild(nameText);
+
     preview.appendChild(chip);
   });
 

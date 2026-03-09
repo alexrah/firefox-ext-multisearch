@@ -96,27 +96,69 @@ function createPanel(engine, index) {
   el.dataset.index = index;
   el.addEventListener("click", () => focusPanel(index));
 
-  el.innerHTML = `
-    <div class="panel-header">
-      <div class="engine-dot" style="background:${engine.color || '#888'}"></div>
-      <div class="engine-label">${engine.name}</div>
-      <div class="panel-status" id="status-${index}">Loading…</div>
-      <div class="panel-kbd">Alt+${index + 1}</div>
-    </div>
-    <div class="panel-iframe-wrap" id="iframe-wrap-${index}">
-      <div class="panel-loading" id="loading-${index}">
-        <div class="spinner" style="border-top-color:${engine.color || 'var(--accent)'}"></div>
-        <div class="loading-label">${engine.name}</div>
-      </div>
-      <iframe id="iframe-${index}" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-modals" loading="lazy"></iframe>
-      <div class="scroll-overlay" id="overlay-${index}"></div>
-    </div>
-  `;
+  // Panel header
+  const panelHeader = document.createElement("div");
+  panelHeader.className = "panel-header";
 
-  const iframe = el.querySelector(`#iframe-${index}`);
-  const loadingEl = el.querySelector(`#loading-${index}`);
-  const statusEl = el.querySelector(`#status-${index}`);
-  const overlayEl = el.querySelector(`#overlay-${index}`);
+  const engineDot = document.createElement("div");
+  engineDot.className = "engine-dot";
+  engineDot.style.background = engine.color || '#888';
+  panelHeader.appendChild(engineDot);
+
+  const engineLabel = document.createElement("div");
+  engineLabel.className = "engine-label";
+  engineLabel.textContent = engine.name;
+  panelHeader.appendChild(engineLabel);
+
+  const panelStatus = document.createElement("div");
+  panelStatus.className = "panel-status";
+  panelStatus.id = `status-${index}`;
+  panelStatus.textContent = "Loading…";
+  panelHeader.appendChild(panelStatus);
+
+  const panelKbd = document.createElement("div");
+  panelKbd.className = "panel-kbd";
+  panelKbd.textContent = `Alt+${index + 1}`;
+  panelHeader.appendChild(panelKbd);
+
+  el.appendChild(panelHeader);
+
+  // Panel iframe wrap
+  const panelIframeWrap = document.createElement("div");
+  panelIframeWrap.className = "panel-iframe-wrap";
+  panelIframeWrap.id = `iframe-wrap-${index}`;
+
+  const panelLoading = document.createElement("div");
+  panelLoading.className = "panel-loading";
+  panelLoading.id = `loading-${index}`;
+
+  const spinner = document.createElement("div");
+  spinner.className = "spinner";
+  spinner.style.borderTopColor = engine.color || 'var(--accent)';
+  panelLoading.appendChild(spinner);
+
+  const loadingLabel = document.createElement("div");
+  loadingLabel.className = "loading-label";
+  loadingLabel.textContent = engine.name;
+  panelLoading.appendChild(loadingLabel);
+
+  panelIframeWrap.appendChild(panelLoading);
+
+  const iframe = document.createElement("iframe");
+  iframe.id = `iframe-${index}`;
+  iframe.sandbox = "allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-modals";
+  iframe.loading = "lazy";
+  panelIframeWrap.appendChild(iframe);
+
+  const overlayEl = document.createElement("div");
+  overlayEl.className = "scroll-overlay";
+  overlayEl.id = `overlay-${index}`;
+  panelIframeWrap.appendChild(overlayEl);
+
+  el.appendChild(panelIframeWrap);
+
+  const loadingEl = panelLoading;
+  const statusEl = panelStatus;
 
   // Set up scroll overlay for sync scroll
   overlayEl.addEventListener("wheel", (e) => {

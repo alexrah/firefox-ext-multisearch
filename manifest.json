@@ -56,5 +56,14 @@
   ],
   "background": {
     "scripts": ["background.js"],
-    "persistent": true}
+    "persistent": true
+  },
+  "browser_specific_settings": {
+  "gecko": {
+    "data_collection_permissions": {
+      "required": ["browsingActivity"]
+    },
+    "id": "split-view-multi-search-engines@alexrah" 
+  }
+}
 }

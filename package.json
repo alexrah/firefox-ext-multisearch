@@ -1,10 +1,12 @@
 {
-  "name": "multisearch-ext 2",
+  "name": "firefox-ext-multisearch",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "web-ext lint",
+    "build": "web-ext build",
+    "start": "web-ext run"
   },
   "keywords": [],
   "author": "alessandro stoppato",
