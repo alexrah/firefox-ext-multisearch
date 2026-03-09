@@ -50,23 +50,63 @@ browser.webRequest.onHeadersReceived.addListener(function (e) {
 }, {urls: ["<all_urls>"], types: ["sub_frame"]}, ["blocking", "responseHeaders"]);
 
 
-// browser.webRequest.onHeadersReceived.addListener(
-//   (details) => {
-//     const headers = details.responseHeaders.filter(h => {
-//       return h.name.toLowerCase() !== "x-frame-options";
-//     }).map(h => {
-//       if (h.name.toLowerCase() === "content-security-policy") {
-//         // Strip only frame-ancestors directive, leave the rest intact
-//         h.value = h.value
-//           .split(";")
-//           .map(d => d.trim())
-//           .filter(d => !d.toLowerCase().startsWith("frame-ancestors"))
-//           .join("; ");
-//       }
-//       return h;
-//     });
-//     return { responseHeaders: headers };
-//   },
-//   { urls: ["<all_urls>"], types: ["sub_frame"] },
-//   ["blocking", "responseHeaders", "extraHeaders"]
-// );
+browser.webNavigation.onBeforeNavigate.addListener(async e => {
+  console.log('beforeNavigate', e.frameId, e.url, e.parentFrameId);
+
+  if (0 !== e.frameId) return;
+  const r = ["https://multisearch.local/"], s = new URL(e.url);
+  if (r.some(r => e.url.startsWith(r))) {
+    const r = s.searchParams.get("q");
+    r && browser.tabs.update(e.tabId, {url: `search.html?q=${encodeURIComponent(r)}`});
+  }
+
+});
+
+
+const searchTabIds = new Set();
+
+// Track which tabs are our search pages
+browser.tabs.onUpdated.addListener((tabId, change, tab) => {
+  console.log("tabs onUpdated" , tab);
+  if (tab.url?.includes(browser.runtime.getURL("search.html"))) {
+    searchTabIds.add(tabId);
+  } else {
+    // remove the tab from the set of search tabs
+    searchTabIds.delete(tabId);
+  }
+});
+
+browser.webRequest.onBeforeRequest.addListener(
+  (details) => {
+
+    console.log('tabs onBeforeRequest ', details, searchTabIds);
+
+    // Only act on our search tabs
+    if (!searchTabIds.has(details.tabId)) return {};
+
+    console.log("tabs onBeforeRequest ", "inside searchTabIds");
+
+    const searchEnginesUrl = DEFAULT_ENGINES.map(e => e.url);
+    console.log('tabs onBeforeRequest searchEnginesUrl: ', searchEnginesUrl);
+    const isSearchEngineFrame = searchEnginesUrl.some(url => {
+      const urlOrigin= new URL(url).origin;
+      console.log('tabs onBeforeRequest urlOrigin: ', urlOrigin);
+      return details.url.startsWith(urlOrigin);
+    });
+
+    if (isSearchEngineFrame) {
+      console.log('tabs onBeforeRequest search engine url: ', details.url);
+      return {};
+    } 
+    
+    console.log('tabs onBeforeRequest click on: ', details.url);
+    
+    // Only intercept when the whole tab would navigate away (main_frame)
+    // This means the user clicked a link that escaped the iframe into the tab
+    browser.tabs.update(details.tabId, { url: details.url });
+
+    return { cancel: true };
+  },
+  { urls: ["<all_urls>"], types: ["sub_frame"] },
+  ["blocking"]
+);
