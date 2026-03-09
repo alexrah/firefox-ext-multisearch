@@ -184,6 +184,10 @@ function loadPanel(panel, engine, query) {
 // ── Panel Focus ───────────────────────────────────────────────────────────────
 function focusPanel(index) {
   focusedPanel = index;
+
+  console.log("focusPanel", index, panels);
+
+  panels[index].iframe.contentWindow.focus();
   panels.forEach((p, i) => {
     p.el.classList.toggle("focused", i === index);
   });
