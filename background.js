@@ -22,13 +22,28 @@ const DEFAULT_SETTINGS = {
   }
 };
 
+let settings = DEFAULT_SETTINGS;
+
 // Initialize storage on install
 browser.runtime.onInstalled.addListener(async () => {
   const existing = await browser.storage.local.get("settings");
-  if (!existing.settings) {
+
+  if (existing.settings) {
+    settings = existing.settings;
+  } else {
     await browser.storage.local.set({ settings: DEFAULT_SETTINGS });
   }
 });
+
+
+browser.storage.onChanged.addListener((changes, area) => {
+  if (area !== "local" || !changes.settings) return;
+
+  const newSettings = changes.settings.newValue;
+  console.log("settings changed", newSettings);
+  settings = newSettings;
+
+})
 
 // Handle keyboard commands - relay to active search tab
 browser.commands.onCommand.addListener(async (command) => {
@@ -87,7 +102,7 @@ browser.webRequest.onBeforeRequest.addListener(
 
     console.log("tabs onBeforeRequest ", "inside searchTabIds");
 
-    const searchEnginesUrl = DEFAULT_ENGINES.map(e => e.url);
+    const searchEnginesUrl = settings.engines.filter(e => e.enabled).map(e => e.url);
     console.log('tabs onBeforeRequest searchEnginesUrl: ', searchEnginesUrl);
     const isSearchEngineFrame = searchEnginesUrl.some(url => {
       const urlOrigin= new URL(url).origin;
