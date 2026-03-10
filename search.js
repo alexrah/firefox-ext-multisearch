@@ -161,9 +161,10 @@ function createPanel(engine, index) {
   const statusEl = panelStatus;
 
   // Set up scroll overlay for sync scroll
-  overlayEl.addEventListener("wheel", (e) => {
+  panelIframeWrap.addEventListener("wheel", (e) => {
     if (!syncScroll) return;
     e.preventDefault();
+    console.log("wheel -> syncScrollAll", e.deltaY, e.deltaX);
     syncScrollAll(e.deltaY, e.deltaX);
   }, { passive: false });
 
@@ -204,11 +205,19 @@ function toggleSyncScroll() {
 function syncScrollAll(deltaY, deltaX) {
   if (isSyncScrolling) return;
   isSyncScrolling = true;
-  panels.forEach(p => {
-    try {
-      p.iframe.contentWindow.scrollBy({ left: deltaX, top: deltaY, behavior: "auto" });
-    } catch (e) { /* cross-origin */ }
+
+  document.querySelectorAll(".panel-iframe-wrap").forEach(iframeWrap => {
+    iframeWrap.scrollBy({ left: deltaX, top: deltaY, behavior: "auto" });
   });
+
+  // panels.forEach(p => {
+  //   try {
+  //     p.iframe.contentWindow.scrollBy({ left: deltaX, top: deltaY, behavior: "auto" });
+  //   } catch (e) { 
+  //     /* cross-origin */
+  //     console.log(e);
+  //   }
+  // });
   requestAnimationFrame(() => { isSyncScrolling = false; });
 }
 

@@ -283,9 +283,19 @@
       z-index: 10;
       display: none;
     }
-    .sync-scroll-active .scroll-overlay {
-      display: block;
-      cursor: ns-resize;
+    /* .sync-scroll-active .scroll-overlay { */
+    /*   display: block; */
+    /*   cursor: ns-resize; */
+    /* } */
+
+    .sync-scroll-active .panel-iframe-wrap {
+      overflow-y: scroll;
+
+    }
+
+    .sync-scroll-active .panel-iframe-wrap iframe {
+      height: 6000px;
+      /* width: calc(100% + 17px); */
     }
 
     /* Empty state */
