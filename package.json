@@ -6,7 +6,8 @@
   "scripts": {
     "lint": "web-ext lint",
     "build": "web-ext build",
-    "start": "web-ext run"
+    "start": "web-ext run",
+    "sign": "web-ext sign"
   },
   "keywords": [],
   "author": "alessandro stoppato",
