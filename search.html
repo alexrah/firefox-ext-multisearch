@@ -278,15 +278,15 @@
 
     /* Sync scroll overlay - intercepts scroll when active */
     .scroll-overlay {
-      position: absolute;
+      position: fixed;
       inset: 0;
       z-index: 10;
       display: none;
     }
-    /* .sync-scroll-active .scroll-overlay { */
-    /*   display: block; */
-    /*   cursor: ns-resize; */
-    /* } */
+    .sync-scroll-active .scroll-overlay {
+      display: block;
+      cursor: ns-resize;
+    }
 
     .sync-scroll-active .panel-iframe-wrap {
       overflow-y: scroll;
@@ -295,7 +295,7 @@
 
     .sync-scroll-active .panel-iframe-wrap iframe {
       height: 6000px;
-      /* width: calc(100% + 17px); */
+      width: calc(100% + 17px);
     }
 
     /* Empty state */

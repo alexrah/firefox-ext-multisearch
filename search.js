@@ -168,6 +168,13 @@ function createPanel(engine, index) {
     syncScrollAll(e.deltaY, e.deltaX);
   }, { passive: false });
 
+  panelIframeWrap.addEventListener("scroll", (e) => {
+    if (!syncScroll) return;
+    e.preventDefault();
+    console.log("scroll -> syncScrollAll", e.deltaY, e.deltaX);
+    syncScrollAll(e.deltaY, e.deltaX);
+  }, { passive: false });
+
   iframe.addEventListener("load", () => {
     loadingEl.classList.add("hidden");
     statusEl.textContent = "Loaded";
