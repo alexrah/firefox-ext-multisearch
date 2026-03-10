@@ -1,7 +1,7 @@
 // ── State ────────────────────────────────────────────────────────────────────
 let settings = null;
 let currentQuery = "";
-let syncScroll = false;
+let syncScroll = true;
 let focusedPanel = 0;
 let panels = [];  // { el, iframe, engine, loadingEl }
 let isSyncScrolling = false;
@@ -168,13 +168,6 @@ function createPanel(engine, index) {
     syncScrollAll(e.deltaY, e.deltaX);
   }, { passive: false });
 
-  panelIframeWrap.addEventListener("scroll", (e) => {
-    if (!syncScroll) return;
-    e.preventDefault();
-    console.log("scroll -> syncScrollAll", e.deltaY, e.deltaX);
-    syncScrollAll(e.deltaY, e.deltaX);
-  }, { passive: false });
-
   iframe.addEventListener("load", () => {
     loadingEl.classList.add("hidden");
     statusEl.textContent = "Loaded";
@@ -206,6 +199,9 @@ function toggleSyncScroll() {
   syncScroll = !syncScroll;
   document.getElementById("btn-sync-scroll").classList.toggle("active", syncScroll);
   document.getElementById("panels-wrap").classList.toggle("sync-scroll-active", syncScroll);
+
+  document.getElementById("header").focus();
+
   showToast(syncScroll ? "Sync scroll: ON" : "Sync scroll: OFF");
 }
 
@@ -214,7 +210,7 @@ function syncScrollAll(deltaY, deltaX) {
   isSyncScrolling = true;
 
   document.querySelectorAll(".panel-iframe-wrap").forEach(iframeWrap => {
-    iframeWrap.scrollBy({ left: deltaX, top: deltaY, behavior: "auto" });
+    iframeWrap.scrollBy({ left: deltaX, top: deltaY, behavior: "smooth" });
   });
 
   // panels.forEach(p => {
@@ -239,6 +235,24 @@ function handleKey(e) {
     e.preventDefault();
     toggleSyncScroll();
   }
+
+
+  const fullHeight = document.getElementById("iframe-wrap-0").clientHeight;
+  console.log('fullHeight', fullHeight);
+  const halfHeight = fullHeight / 2;
+
+    const scrollMap = {
+      PageUp:   -fullHeight,
+      PageDown:  fullHeight,
+      u:        -halfHeight,
+      d:         halfHeight,
+    };
+
+    if (e.key in scrollMap) {
+      e.preventDefault(); // prevent default browser scroll behavior
+      syncScrollAll(scrollMap[e.key], 0);
+    }
+
 }
 
 function handleCommand(command) {
