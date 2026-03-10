@@ -7,8 +7,8 @@
     "lint": "web-ext lint",
     "build": "web-ext build",
     "start": "web-ext run",
-    "sign:listed": "node --env-file=.env web-ext sign --api-key=$FF_KEY --api-secret=$FF_SECRET --channel=listed",
-    "sign:unlisted": "node --env-file=.env web-ext sign --api-key=$FF_KEY --api-secret=$FF_SECRET --channel=unlisted"
+    "sign:listed": "source .env && web-ext sign --api-key=$FF_KEY --api-secret=$FF_SECRET --channel=listed",
+    "sign:unlisted": "source .env && web-ext sign --api-key=$FF_KEY --api-secret=$FF_SECRET --channel=unlisted"
   },
   "keywords": [],
   "author": "alessandro stoppato",
