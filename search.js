@@ -1,7 +1,7 @@
 // ── State ────────────────────────────────────────────────────────────────────
 let settings = null;
 let currentQuery = "";
-let syncScroll = true;
+let syncScroll = false;
 let focusedPanel = 0;
 let panels = [];  // { el, iframe, engine, loadingEl }
 let isSyncScrolling = false;
@@ -41,6 +41,11 @@ async function init() {
   browser.runtime.onMessage.addListener((msg) => {
     if (msg.type === "command") handleCommand(msg.command);
   });
+
+  if(settings.syncScroll) {
+    toggleSyncScroll();
+  }
+
 }
 
 // ── Settings ─────────────────────────────────────────────────────────────────

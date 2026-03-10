@@ -19,7 +19,8 @@ const DEFAULT_SETTINGS = {
     "focus-panel-3": "Alt+3",
     "focus-panel-4": "Alt+4",
     "toggle-sync-scroll": "Alt+S"
-  }
+  },
+  syncScroll: true
 };
 
 let settings = DEFAULT_SETTINGS;

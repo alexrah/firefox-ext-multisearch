@@ -18,6 +18,7 @@ async function init() {
   renderEngines();
   renderShortcuts();
   updateEnabledCount();
+  syncScrollCheckbox();
 }
 
 function applyTheme(theme) {
@@ -156,6 +157,27 @@ function renderEngines() {
   });
 }
 
+function syncScrollCheckbox(){
+
+  const container = document.getElementById("sync-scroll-container");
+  const syncScrollStatus = settings.syncScroll;
+
+  // Toggle label
+  const toggleLabel = document.createElement("label");
+  toggleLabel.title = syncScrollStatus ? "Enabled" : "Disabled";
+
+  const toggleCheckbox = document.createElement("input");
+  toggleCheckbox.type = "checkbox";
+  toggleCheckbox.checked = syncScrollStatus;
+  toggleLabel.appendChild(toggleCheckbox);
+  container.appendChild(toggleLabel);
+
+  toggleCheckbox.addEventListener("change", (e) => {
+    settings.syncScroll = e.target.checked;
+  });
+
+}
+
 function updateEnabledCount() {
   const n = settings.engines.filter(e => e.enabled).length;
   document.getElementById("enabled-count").textContent = `${n} enabled${n > 4 ? " (max 4 shown)" : ""}`;
@@ -240,6 +262,7 @@ document.getElementById("btn-reset").addEventListener("click", async () => {
   renderEngines();
   renderShortcuts();
   updateEnabledCount();
+  syncScrollCheckbox();
 });
 
 function escHtml(str) {
