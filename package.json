@@ -1,13 +1,14 @@
 {
   "name": "firefox-ext-multisearch",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "lint": "web-ext lint",
     "build": "web-ext build",
     "start": "web-ext run",
-    "sign": "web-ext sign"
+    "sign:listed": "node --env-file=.env web-ext sign --api-key=$FF_KEY --api-secret=$FF_SECRET --channel=listed",
+    "sign:unlisted": "node --env-file=.env web-ext sign --api-key=$FF_KEY --api-secret=$FF_SECRET --channel=unlisted"
   },
   "keywords": [],
   "author": "alessandro stoppato",
