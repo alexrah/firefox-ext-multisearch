@@ -231,6 +231,9 @@ function syncScrollAll(deltaY, deltaX) {
 
 // ── Keyboard ──────────────────────────────────────────────────────────────────
 function handleKey(e) {
+  const tag = e.target.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
+
   if (e.altKey && e.key >= "1" && e.key <= "4") {
     e.preventDefault();
     focusPanel(parseInt(e.key) - 1);
@@ -239,6 +242,11 @@ function handleKey(e) {
   if (e.altKey && e.key === "s") {
     e.preventDefault();
     toggleSyncScroll();
+  }
+
+  if (e.altKey && e.key === "l") {
+    e.preventDefault();
+    document.getElementById("search-input").focus();
   }
 
 
@@ -267,6 +275,10 @@ function handleCommand(command) {
     showToast(`Panel ${panelCmds[command] + 1} focused`);
   }
   if (command === "toggle-sync-scroll") toggleSyncScroll();
+
+  if (command === 'focus-input') { 
+    document.getElementById("search-input").focus();
+  }
 }
 
 // ── Resize Panels ─────────────────────────────────────────────────────────────
