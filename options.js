@@ -1,3 +1,5 @@
+import { DEFAULT_SETTINGS } from './background.js'
+
 const SHORTCUT_LABELS = {
   "focus-panel-1": "Focus Panel 1",
   "focus-panel-2": "Focus Panel 2",
@@ -10,8 +12,7 @@ let settings = {};
 
 async function init() {
   const data = await browser.storage.local.get("settings");
-  settings = data.settings || { theme: "system", engines: [...DEFAULT_ENGINES] };
-  if (!settings.engines) settings.engines = [...DEFAULT_ENGINES];
+  settings = data.settings;
 
   applyTheme(settings.theme);
   renderTheme(settings.theme);
@@ -255,8 +256,7 @@ document.getElementById("btn-save").addEventListener("click", async () => {
 
 document.getElementById("btn-reset").addEventListener("click", async () => {
   if (!confirm("Reset all settings to defaults?")) return;
-  settings = { theme: "system", engines: JSON.parse(JSON.stringify(DEFAULT_ENGINES)) };
-  await browser.storage.local.set({ settings });
+  await browser.storage.local.set({ settings: DEFAULT_SETTINGS });
   applyTheme("system");
   renderTheme("system");
   renderEngines();

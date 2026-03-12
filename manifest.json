@@ -61,7 +61,8 @@
   ],
   "background": {
     "scripts": ["background.js"],
-    "persistent": true
+    "persistent": true,
+    "type": "module"
   },
   "browser_specific_settings": {
   "gecko": {

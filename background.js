@@ -1,14 +1,14 @@
 // background.js - handles commands and setup
 
 const DEFAULT_ENGINES = [
-  { id: "quant", name: "Quant",  url: "https://www.qwant.com/?q={query}",                        enabled: true,  color: "#646464" },
-  { id: "duckduckgo", name: "DuckDuckGo",  url: "https://duckduckgo.com/?q={query}",             enabled: true,  color: "#de5833" },
-  { id: "ecosia",     name: "Ecosia",      url: "https://www.ecosia.org/search?q={query}",       enabled: false, color: "#5a9e47" },
-  { id: "brave",      name: "Brave",       url: "https://search.brave.com/search?q={query}",     enabled: false, color: "#fb542b" },
-  { id: "startpage",  name: "Startpage",   url: "https://www.startpage.com/search?q={query}",    enabled: false, color: "#4a90d9" },
+  { id: "brave",      name: "Brave",      url: "https://search.brave.com/search?q={query}",     enabled: true,  color: "#fb542b" },
+  { id: "quant",      name: "Quant",      url: "https://www.qwant.com/?q={query}",              enabled: true,  color: "#646464" },
+  { id: "duckduckgo", name: "DuckDuckGo", url: "https://duckduckgo.com/?q={query}",             enabled: false, color: "#de5833" },
+  { id: "ecosia",     name: "Ecosia",     url: "https://www.ecosia.org/search?q={query}",       enabled: false, color: "#5a9e47" },
+  { id: "startpage",  name: "Startpage",  url: "https://www.startpage.com/search?q={query}",    enabled: false, color: "#4a90d9" },
 ];
 
-const DEFAULT_SETTINGS = {
+export const DEFAULT_SETTINGS = {
   theme: "system",
   syncScroll: false,
   maxPanels: 4,
@@ -27,6 +27,7 @@ let settings = DEFAULT_SETTINGS;
 
 // Initialize storage on install
 browser.runtime.onInstalled.addListener(async () => {
+  console.log("Installing...");
   const existing = await browser.storage.local.get("settings");
 
   if (existing.settings) {
